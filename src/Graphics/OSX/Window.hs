@@ -342,11 +342,17 @@ getWindowIdx :: Maybe (Int, String, String) -> Maybe Int
 getWindowIdx Nothing = Nothing
 getWindowIdx (Just (idleTime, _, _)) = Just idleTime
 
+isTitlelessChrome :: Maybe (Int, String, String) -> Bool
+isTitlelessChrome Nothing = False
+isTitlelessChrome (Just (idleTime, window, owner))
+  | owner=="Google Chrome" && window=="" = True
+  | otherwise = False
+
 getForegroundWindowIdx :: CFArrayRef -> CLong -> CLong -> IO (Maybe Int)
 getForegroundWindowIdx info idx count = do
                   cond (count == 0) Nothing $ do
                     title <- getWindowTitle info idx
-                    cond (isJust title) (getWindowIdx title) $
+                    cond ((isJust title) && (not (isTitlelessChrome title))) (getWindowIdx title) $
                       getForegroundWindowIdx info (idx + 1) (count - 1)
 
 getForegroundWindow :: IO Int
