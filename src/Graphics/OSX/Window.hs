@@ -345,7 +345,7 @@ getWindowIdx (Just (idleTime, _, _)) = Just idleTime
 isTitlelessChrome :: Maybe (Int, String, String) -> Bool
 isTitlelessChrome Nothing = False
 isTitlelessChrome (Just (idleTime, window, owner))
-  | owner=="Google Chrome" && window=="" = True
+  | owner=="Google Chrome.app" && window=="" = True
   | otherwise = False
 
 getForegroundWindowIdx :: CFArrayRef -> CLong -> CLong -> IO (Maybe Int)
